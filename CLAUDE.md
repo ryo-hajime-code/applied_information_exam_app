@@ -103,5 +103,13 @@ App → Router
 詳細仕様は `docs/` を参照:
 - `02_architecture.md` — システム構成・技術選定理由
 - `03_database.md` — LocalStorage スキーマ・バリデーションルール・マイグレーション方針
+- `04_screen-design.md` — 画面の構成要素や画面遷移の詳細
 - `05_api-design.md` — storage.ts / calculator.ts の関数仕様と実装例
 - `06_typescript-types.md` — 全型定義の完全版
+
+## Claude Code への作業指示ルール
+
+- issueは複数まとめて実装せず、1つずつ行うこと
+- 実装時はissue 単体ではなく、関連する `docs/` の設計書も合わせて参照すること
+- 実装時は上記「設計判断の記録」および設計書に書かれた意図・理由をコードコメントとして残すこと
+- コメントは「何をするか」ではなく「**なぜこの実装にしたか**」を書くこと
