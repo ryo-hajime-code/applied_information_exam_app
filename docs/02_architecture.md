@@ -6,6 +6,7 @@
 |-----------|------|---------|
 | 1.0.0 | 2026-02-14 | 初版作成 |
 | 2.0.0 | 2026-02-25 | レビュー指摘反映: 技術選定の確定(React)、ディレクトリ構成の整理、削除機能のMVP追加対応 |
+| 3.0.0 | 2026-03-16 | スタイリング方針を CSS Modules / Tailwind CSS から styled-components に変更 |
 
 ---
 
@@ -68,7 +69,7 @@
   "framework": "React 18",
   "build_tool": "Vite",
   "language": "TypeScript (strict: true)",
-  "styling": "CSS Modules / Tailwind CSS",
+  "styling": "styled-components",
   "routing": "React Router v6"
 }
 ```
@@ -309,6 +310,8 @@ cd past-exam-tracker
 npm install
 npm install react-router-dom
 npm install date-fns
+npm install styled-components
+npm install -D @types/styled-components
 npm run dev
 ```
 
