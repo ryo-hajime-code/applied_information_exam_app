@@ -13,29 +13,29 @@
 
 ## Issue一覧
 
-| No | ファイル名 | タイトル | 依存関係 |
-|----|-----------|---------|---------|
-| 001 | issue-001_typescript_types.md | TypeScript型定義の実装 | なし |
-| 002 | issue-002_storage_service.md | LocalStorageサービスの実装（storage.ts） | Issue-001, Issue-003 |
-| 003 | issue-003_calculator_service.md | 計算サービスの実装（calculator.ts） | Issue-001 |
-| 004 | issue-004_validation_and_utils.md | バリデーション・ユーティリティ関数の実装 | Issue-001 |
-| 005 | issue-005_button_and_number_input_components.md | Button・NumberInputコンポーネントの実装 | Issue-001 |
-| 006 | issue-006_toast_component.md | Toastコンポーネントの実装 | Issue-001 |
-| 007 | issue-007_confirm_dialog_component.md | ConfirmDialogコンポーネントの実装 | Issue-001, Issue-005 |
-| 008 | issue-008_record_card_component.md | RecordCardコンポーネントの実装 | Issue-001 |
-| 009 | issue-009_app_routing_styles.md | App.tsx・ルーティング・グローバルスタイルの設定 | Issue-001 |
-| 010 | issue-010_countdown_component.md | CountDownコンポーネントの実装 | Issue-001, Issue-002, Issue-004, Issue-005 |
-| 011 | issue-011_record_form_component.md | RecordFormコンポーネントの実装 | Issue-001, Issue-003, Issue-004, Issue-005 |
-| 012 | issue-012_comparison_display_component.md | ComparisonDisplayコンポーネントの実装 | Issue-001 |
-| 013 | issue-013_home_page.md | Home画面の実装 | Issue-002, Issue-003, Issue-006, Issue-009, Issue-010, Issue-011, Issue-012 |
-| 014 | issue-014_record_list_page.md | RecordList画面の実装 | Issue-002, Issue-003, Issue-006, Issue-007, Issue-008, Issue-009 |
-| 015 | issue-015_calculator_unit_tests.md | calculator.tsのユニットテスト実装 | Issue-003 |
-| 016 | issue-016_storage_unit_tests.md | storage.tsのユニットテスト実装 | Issue-002 |
-| 017 | issue-017_validation_unit_tests.md | validation.tsのユニットテスト実装 | Issue-004 |
-| 018 | issue-018_accessibility_and_animations.md | アクセシビリティ・アニメーション・レスポンシブ対応 | Issue-013, Issue-014 |
-| 019 | issue-019_readme_documentation.md | README・ドキュメント整備 | なし |
-| 020 | issue-020_deploy_setup.md | デプロイ設定（Vercel / Netlify） | Issue-013, Issue-014, Issue-019 |
-| 021 | issue-021_export_import_feature.md | エクスポート・インポート機能の実装 | Issue-002, Issue-007, Issue-013, Issue-014 |
+| No | ファイルパス | タイトル | 依存関係 |
+|----|------------|---------|---------|
+| 001 | features/issue-001_typescript_types.md | TypeScript型定義の実装 | なし |
+| 002 | features/issue-002_storage_service.md | LocalStorageサービスの実装（storage.ts） | Issue-001, Issue-003 |
+| 003 | features/issue-003_calculator_service.md | 計算サービスの実装（calculator.ts） | Issue-001 |
+| 004 | features/issue-004_validation_and_utils.md | バリデーション・ユーティリティ関数の実装 | Issue-001 |
+| 005 | features/issue-005_button_and_number_input_components.md | Button・NumberInputコンポーネントの実装 | Issue-001 |
+| 006 | features/issue-006_toast_component.md | Toastコンポーネントの実装 | Issue-001 |
+| 007 | features/issue-007_confirm_dialog_component.md | ConfirmDialogコンポーネントの実装 | Issue-001, Issue-005 |
+| 008 | features/issue-008_record_card_component.md | RecordCardコンポーネントの実装 | Issue-001 |
+| 009 | features/issue-009_app_routing_styles.md | App.tsx・ルーティング・グローバルスタイルの設定 | Issue-001 |
+| 010 | features/issue-010_countdown_component.md | CountDownコンポーネントの実装 | Issue-001, Issue-002, Issue-004, Issue-005 |
+| 011 | features/issue-011_record_form_component.md | RecordFormコンポーネントの実装 | Issue-001, Issue-003, Issue-004, Issue-005 |
+| 012 | features/issue-012_comparison_display_component.md | ComparisonDisplayコンポーネントの実装 | Issue-001 |
+| 013 | features/issue-013_home_page.md | Home画面の実装 | Issue-002, Issue-003, Issue-006, Issue-009, Issue-010, Issue-011, Issue-012 |
+| 014 | features/issue-014_record_list_page.md | RecordList画面の実装 | Issue-002, Issue-003, Issue-006, Issue-007, Issue-008, Issue-009 |
+| 015 | tests/issue-015_calculator_unit_tests.md | calculator.tsのユニットテスト実装 | Issue-003 |
+| 016 | tests/issue-016_storage_unit_tests.md | storage.tsのユニットテスト実装 | Issue-002 |
+| 017 | tests/issue-017_validation_unit_tests.md | validation.tsのユニットテスト実装 | Issue-004 |
+| 018 | chore/issue-018_accessibility_and_animations.md | アクセシビリティ・アニメーション・レスポンシブ対応 | Issue-013, Issue-014 |
+| 019 | chore/issue-019_readme_documentation.md | README・ドキュメント整備 | なし |
+| 020 | chore/issue-020_deploy_setup.md | デプロイ設定（Vercel / Netlify） | Issue-013, Issue-014, Issue-019 |
+| 021 | chore/issue-021_export_import_feature.md | エクスポート・インポート機能の実装 | Issue-002, Issue-007, Issue-013, Issue-014 |
 
 ---
 
