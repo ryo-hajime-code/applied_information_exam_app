@@ -54,6 +54,10 @@ export default function Home() {
     setToastMessage(message);
     setToastVisible(true);
     setTimeout(() => setToastVisible(false), 2000);
+    // 補足：二つ目の引数 _type について
+    // 関数内では_typeを使用していない。
+    // 使用していない引数があっても警告が出ないように、_ をつけている。
+    // しかし、将来的には、type を受け取るようにするため、今ここで宣言する。
   };
 
   return (
