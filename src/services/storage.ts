@@ -58,6 +58,8 @@ export function getAllRecords(): PracticeRecord[] {
  * 保存後に getLatestRecord() を呼ぶと、追加したばかりの記録自身が返ってしまう。
  */
 export function createRecord(input: RecordInput): PracticeRecord | null {
+  // この処理が失敗した時にcatchでnullを返す。
+  // try-catch のおかげで、処理が失敗してもプログラムが止まらない。
   try {
     // rate はユーザー入力から計算するのでここで確定させる。
     // storage に保存しておくのは表示の一貫性のため（更新時は必ず再計算すること）。
@@ -79,9 +81,9 @@ export function createRecord(input: RecordInput): PracticeRecord | null {
     localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(data));
 
     return newRecord;
-  } catch (error) {
+  } catch (e) {
     // QuotaExceededError（容量超過）も含めてここでキャッチする。
-    console.error('Failed to create record:', error);
+    console.error('Failed to create record:', e);
     return null;
   }
 }
@@ -98,15 +100,20 @@ export function getLatestRecord(): PracticeRecord | null {
     const records = getAllRecords();
     if (records.length === 0) return null;
 
+    // 記録の配列を日付の新しい順に並び替える
+    // sortはaとbを比較して順番を決める
     const sorted = [...records].sort((a, b) => {
       const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime();
+      // 日付が違うならその結果を返す
       if (dateDiff !== 0) return dateDiff;
+      // 日付が同じなら、時刻の差で返す
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
+    // 配列の先頭が最新の記録
     return sorted[0];
-  } catch (error) {
-    console.error('Failed to get latest record:', error);
+  } catch (e) {
+    console.error('Failed to get latest record:', e);
     return null;
   }
 }
