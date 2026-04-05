@@ -1,42 +1,35 @@
+/* ページ遷移アニメーション（スライドイン右から左）
+ * position: relative を持つ .page コンテナに対して
+ * enter/exit のフェーズで translateX を動かすことで
+ * スタック型のナビゲーション感を演出する。
+ * overflow: hidden を #root に設定して、画面外にはみ出した
+ * スライド中のページが見えないようにしている。
+ */
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  overflow: hidden;
+  position: relative;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* 各ページのラッパー。スライドアニメーションの起点となる */
+.page {
+  width: 100%;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Enter: 右から入ってくる */
+.slide-enter {
+  transform: translateX(100%);
+}
+.slide-enter-active {
+  transform: translateX(0);
+  transition: transform 0.3s ease-in-out;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Exit: 左へ出ていく */
+.slide-exit {
+  transform: translateX(0);
 }
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.slide-exit-active {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
 }
