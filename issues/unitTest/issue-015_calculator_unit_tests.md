@@ -12,7 +12,8 @@
   - ゼロ除算: `calculateRate(0, 0)` → `0`
   - 0点: `calculateRate(0, 50)` → `0.0`
   - 満点: `calculateRate(50, 50)` → `100.0`
-  - 小数点の丸め: 結果が小数点第1位まで
+  - 小数点の丸め: 結果が小数点第1位まで、小数点第2位は四捨五入する
+  - 正答率の四捨五入: `calculateRate(1, 3)` → `33.3`
 - [ ] `calculateComparison()` のテストケースを実装する
   - 正の差分: `calculateComparison(85.0, 84.0)` → `1.0`
   - 負の差分: `calculateComparison(76.0, 84.0)` → `-8.0`
