@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:log": "mkdir -p test-log && vitest run --reporter=verbose 2>&1 | tee test-log/result-$(date +%Y%m%d-%H%M%S).log"
   },
   "dependencies": {
     "date-fns": "^4.1.0",

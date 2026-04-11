@@ -13,7 +13,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev       # 開発サーバー起動
 npm run build     # プロダクションビルド
 npm run lint      # ESLint 実行
-npm run test      # Vitest でユニットテスト実行（全件）
+npm run test      # Vitest でユニットテスト実行
+npm run test:log  # テスト実行 + 結果を test-log/result-YYYYMMDD-HHMMSS.log に保存
 npm run test -- --run src/services/calculator.test.ts  # 特定ファイルのみ実行
 ```
 
