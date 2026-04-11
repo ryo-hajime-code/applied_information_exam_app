@@ -81,6 +81,15 @@ App → Router
 
 **ID 生成**: `crypto.randomUUID()` を使用（`Date.now()` ベースは衝突リスクがあるため使用禁止）
 
+## テストログ
+
+`npm run test` または `vitest` を含む Bash コマンドを実行するたびに、結果が自動で `test-log/test-results.log` に追記される。
+
+- ログファイル: `test-log/test-results.log`（1ファイルに累積追記）
+- 記録内容: 実行日時・コマンド・テスト出力
+- git管理: 対象外（`.gitignore` に `test-log/` を追加済み）
+- 仕組み: `.claude/settings.json` の `PostToolUse` フックで自動実行
+
 ## テスト対象
 
 計算ロジックを優先してテスト:
