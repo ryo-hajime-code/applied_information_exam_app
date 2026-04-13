@@ -3,18 +3,19 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import Home from './pages/Home';
 import RecordList from './pages/RecordList';
 import './App.css';
+import { useRef } from 'react';
 
 // 画面遷移アニメーション（スライドイン右から左）を TransitionGroup で管理する。
 // react-transition-group を使うことで、ページ単位の CSS アニメーションを
 // React のライフサイクルと連動させられる。
 const AnimatedRoutes = () => {
   const location = useLocation();
-
+  const nodeRef = useRef(null);
+  
   return (
     <TransitionGroup component={null}>
-      {/* key に location.pathname を渡すことで、パス変更のたびに
-          enter/exit アニメーションが発火する */}
-      <CSSTransition key={location.pathname} classNames="slide" timeout={300} unmountOnExit>
+      {/* key に location.pathname を渡すことで、パス変更のたびに enter/exit アニメーションが発火する */}
+      <CSSTransition nodeRef={nodeRef} key={location.pathname} classNames="slide" timeout={300} unmountOnExit>
         <div className="page">
           <Routes location={location}>
             {/* pathが/のときはHome, pathが/recordsのときはRecordListを画面に表示する（≒ページ遷移させる） */}
