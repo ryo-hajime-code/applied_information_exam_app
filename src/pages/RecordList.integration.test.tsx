@@ -33,6 +33,7 @@ describe('RecordList 画面 — 一覧表示フロー', () => {
 
     // RecordCard の削除ボタンは aria-label 付き。記録数分（3件）の削除ボタンが存在することで、
     // RecordCard が記録数分描画されたことを確認する。
+    // getAllByRole でbutton をまとめて取得し、配列にして deleteButtons に代入
     const deleteButtons = screen.getAllByRole('button', { name: /の記録を削除/ });
     expect(deleteButtons).toHaveLength(3);
   });
@@ -43,16 +44,17 @@ describe('RecordList 画面 — 一覧表示フロー', () => {
 
     renderWithRouter(['/records']);
 
-    // 計算値の精度検証は service.integration.test.ts でカバー済み。
-    // ここでは「テキストが存在する」という描画の有無のみを検証する。
     expect(screen.getByText(/平均正答率:/)).toBeVisible();
     expect(screen.getByText(/総演習回数:/)).toBeVisible();
+    expect(screen.getByText('まだ記録がありません')).not.toBeInTheDocument();
   });
-
+  
   test('LocalStorage が空の状態でアクセスすると「まだ記録がありません」が表示される', () => {
     renderWithRouter(['/records']);
-
+    
     expect(screen.getByText('まだ記録がありません')).toBeVisible();
+    expect(screen.getByText(/平均正答率:/)).toBeInTheDocument();
+    expect(screen.getByText(/総演習回数:/)).toBeInTheDocument();
   });
 });
 
