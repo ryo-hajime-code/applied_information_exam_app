@@ -68,8 +68,8 @@ describe('Home 画面 — 記録追加フロー', () => {
     await user.click(screen.getByRole('button', { name: '記録する' }));
 
     // 前回記録がないため comparison は null のまま → Home が ComparisonDisplay を描画しない。
-    // queryByText は要素が存在しない場合 null を返すため、not.toBeVisible で確認する。
-    expect(screen.queryByText(/前回比/)).not.toBeVisible();
+    // queryByText は要素が存在しない場合 null を返すため、not.toBeInTheDocument で確認する。
+    expect(screen.queryByText(/前回比/)).not.toBeInTheDocument();
   });
 
   test('記録が2件以上ある場合、記録追加後に ComparisonDisplay が表示される', async () => {
