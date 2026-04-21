@@ -190,40 +190,6 @@ export interface ToastProps {
   type: 'success' | 'info';
 }
 
-// ========== 型ガード ==========
-
-/**
- * LocalStorage から読み込んだデータが PracticeRecord 型かどうかを実行時に検証する。
- * LocalStorage の値は JSON.parse 後に unknown 型になるため、
- * 型アサーション(as PracticeRecord)ではなく型ガードで安全性を保証する。
- */
-export function isPracticeRecord(obj: unknown): obj is PracticeRecord {
-  if (typeof obj !== 'object' || obj === null) return false;
-  const r = obj as Record<string, unknown>;
-  return (
-    typeof r.id === 'string' &&
-    typeof r.date === 'string' &&
-    typeof r.total === 'number' &&
-    typeof r.correct === 'number' &&
-    typeof r.rate === 'number' &&
-    typeof r.createdAt === 'string'
-  );
-}
-
-/**
- * オブジェクトが RecordInput 型かどうかを実行時に検証する。
- * isPracticeRecord と異なり id/rate/createdAt を含まない点に注意。
- */
-export function isRecordInput(obj: unknown): obj is RecordInput {
-  if (typeof obj !== 'object' || obj === null) return false;
-  const r = obj as Record<string, unknown>;
-  return (
-    typeof r.date === 'string' &&
-    typeof r.total === 'number' &&
-    typeof r.correct === 'number'
-  );
-}
-
 // ========== ヘルパー関数 ==========
 
 /**

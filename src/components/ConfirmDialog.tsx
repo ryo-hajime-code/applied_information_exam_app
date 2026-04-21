@@ -31,9 +31,6 @@ export function ConfirmDialog({ isOpen, message, onConfirm, onCancel }: ConfirmD
     // 薄暗い背景をクリックしてもダイアログは閉じる
     <Overlay onClick={onCancel}>
       <Dialog
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="confirm-dialog-message"
         onKeyDown={handleKeyDown}
         onClick={(e) => e.stopPropagation()}
       >

@@ -18,14 +18,6 @@ function loadStorageData(): StorageData {
 
   const parsed: unknown = JSON.parse(raw);
 
-  // versionフィールドがない旧形式（配列直接保存）への対応。
-  // 初回から version を含める設計だが、万が一古いデータが残っていた場合のフォールバック。
-  if (Array.isArray(parsed)) {
-    const migrated: StorageData = { version: '1.0.0', records: parsed as PracticeRecord[] };
-    localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(migrated));
-    return migrated;
-  }
-
   return parsed as StorageData;
 }
 
