@@ -6,7 +6,7 @@ import type { PracticeRecord } from '../types';
 
 // 正答率を計算する。
 export function calculateRate(correct: number, total: number): number {
-  // total === 0 のとき、0で割ることを防ぐため 0 を返す
+  // total === 0 のとき、0で割ることを防ぐ
   if (total === 0) return 0;
   return Math.round((correct / total) * 1000) / 10;
 }

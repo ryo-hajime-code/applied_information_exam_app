@@ -1,7 +1,6 @@
 // src/utils/validation.ts
-// バリデーションロジックをUI層から分離することで、同じルールをフォームとサービス層で
-// 一貫して適用できる。ValidationResult 型を返すことで呼び出し側がエラー文言を
-// 別途管理しなくて済む（03_database.md セクション7参照）。
+// バリデーションロジックをUI層から分離することで、同じルールをフォームとサービス層で一貫して適用できる。
+// ValidationResult 型を返すことで呼び出し側がエラー文言を別途管理しなくて済む（03_database.md セクション7参照）。
 
 import type { RecordInput, Settings, ValidationResult } from '../types';
 
@@ -13,6 +12,8 @@ import type { RecordInput, Settings, ValidationResult } from '../types';
  *   数値フィールドが存在しない状態で比較演算が走ることを防ぐ。
  * - correct > total のチェックは total の存在が確定してから行う。
  */
+
+// RecordInput（date, total, correctの3つを持つ）の型の値を引数にする
 export function validateRecord(input: RecordInput): ValidationResult {
   // 日付: 必須 + YYYY-MM-DD 形式チェック
   if (!input.date) {
@@ -23,17 +24,17 @@ export function validateRecord(input: RecordInput): ValidationResult {
     return { valid: false, error: '日付はYYYY-MM-DD形式で入力してください' };
   }
 
-  // total: 1以上200以下の整数チェック
-  // 上限200は応用情報午前（80問）より余裕を持たせつつ、誤入力を防ぐための設計値。
+  // 回答数の整数チェック
+  // 0はエラーとして弾く
   if (!Number.isInteger(input.total) || input.total < 1) {
     return { valid: false, error: '解いた問題数は1以上にしてください' };
   }
 
-  if (input.total > 200) {
-    return { valid: false, error: '解いた問題数は200以下にしてください' };
+  if (input.total > 500) {
+    return { valid: false, error: '解いた問題数は500以下にしてください' };
   }
 
-  // correct: 0以上かつtotal以下の整数チェック
+  // 正答数: 0以上かつ回答数以下の整数チェック
   if (!Number.isInteger(input.correct) || input.correct < 0) {
     return { valid: false, error: '正答数は0以上にしてください' };
   }
@@ -48,7 +49,7 @@ export function validateRecord(input: RecordInput): ValidationResult {
 /**
  * Settings 更新時のバリデーション。
  *
- * examDate が null の場合は「受験日なし」として有効とみなす。
+ * examDate が null の場合は「受験日なし」として有効とする。
  * examDate が設定されている場合のみ形式チェック・未来日付チェックを行う。
  *
  * なぜ「今日以降」を許容するか:

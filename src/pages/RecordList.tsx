@@ -151,9 +151,6 @@ const PageWrapper = styled.div`
   background-color: var(--color-background);
 `;
 
-// ヘッダーは左: 戻るボタン、中央: タイトル、右: スペーサーの3カラム構成にする。
-// justifyContent: space-between だとタイトルが中央に来ないため、
-// 両端に同幅の要素を置くことでタイトルを視覚的に中央に配置する。
 const Header = styled.header`
   display: flex;
   align-items: center;

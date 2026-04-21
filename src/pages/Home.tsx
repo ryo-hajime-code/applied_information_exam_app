@@ -28,7 +28,7 @@ export default function Home() {
     setExamDate(getSettings().examDate);
   }, []);
 
-  // 記録するボタンのonClick で発火し、RecordForm から渡された入力情報を最新記録として保存する。
+  // 「記録するボタン」のonClick で発火し、RecordForm.tsx から渡された入力情報を最新記録として保存する。
   // 同時に、前回比を計算して画面に表示する（Toast で表示）
   const handleSubmit = (newRecord: PracticeRecord) => {
 

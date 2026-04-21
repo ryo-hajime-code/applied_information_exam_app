@@ -1,25 +1,17 @@
 // src/utils/dateFormat.ts
 // 日付の表示フォーマットと残日数計算をここに集約する。
-// UI層の各コンポーネントが独自に日付処理を書くと実装が分散してバグを招くため、
-// ここを唯一の変換ポイントにする。
+// UI層の各コンポーネントが独自に日付処理を書くと実装が分散してバグを招くため、ここを唯一の変換ポイントにする。
 // date-fns を使う理由: タイムゾーン処理や差分計算をネイティブ Date より
 // 安全かつ簡潔に記述できるため。
 
 import { differenceInCalendarDays, format, parseISO } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
-/**
- * YYYY-MM-DD 形式の日付文字列を日本語表示に変換する。
- *
- * parseISO を使う理由:
- * new Date("2026-02-15") は UTC として解釈されるため、環境によって
- * 日本時間では前日になることがある。parseISO はローカルタイムで解釈するため
- * ズレが生じない。
- *
- * 例: "2026-02-15" → "2026年2月15日"
- */
+// YYYY-MM-DD 形式の日付文字列を日本語表示に変換する。
 export function formatDate(dateString: string): string {
+  // dateString を日付オブジェクトに変換する
   const date = parseISO(dateString);
+  // 例: "2026-04-21" → "2026年4月21日"
   return format(date, 'yyyy年M月d日', { locale: ja });
 }
 
