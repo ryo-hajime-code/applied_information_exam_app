@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import Home from './pages/Home';
+import RecordList from './pages/RecordList';
+import './App.css';
+import { useRef } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+// 画面遷移アニメーション（スライドイン右から左）を TransitionGroup で管理する。
+// react-transition-group を使うことで、ページ単位の CSS アニメーションを
+// React のライフサイクルと連動させられる。
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  const nodeRef = useRef(null);
+  
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <TransitionGroup component={null}>
+      {/* key に location.pathname を渡すことで、パス変更のたびに enter/exit アニメーションが発火する */}
+      <CSSTransition nodeRef={nodeRef} key={location.pathname} classNames="slide" timeout={300} unmountOnExit>
+        <div className="page">
+          <Routes location={location}>
+            {/* pathが/のときはHome, pathが/recordsのときはRecordListを画面に表示する（≒ページ遷移させる） */}
+            <Route path="/" element={<Home />} />
+            <Route path="/records" element={<RecordList />} />
+            {/* 定義外のパスはすべてホームへリダイレクト */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      </CSSTransition>
+    </TransitionGroup>
+  );
+};
 
-export default App
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AnimatedRoutes />
+    </BrowserRouter>
+  );
+};
+
+export default App;

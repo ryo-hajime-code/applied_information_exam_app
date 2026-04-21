@@ -13,7 +13,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev       # 開発サーバー起動
 npm run build     # プロダクションビルド
 npm run lint      # ESLint 実行
-npm run test      # Vitest でユニットテスト実行（全件）
+npm run test      # Vitest でユニットテスト実行
+npm run test:log  # テスト実行 + 結果を test-log/result-YYYYMMDD-HHMMSS.log に保存
 npm run test -- --run src/services/calculator.test.ts  # 特定ファイルのみ実行
 ```
 
@@ -95,8 +96,9 @@ App → Router
 - Phase 2 (#005-008): 共通UIコンポーネント
 - Phase 3 (#009-014): ページ実装
 - Phase 4 (#015-017): ユニットテスト
-- Phase 5 (#018-020): 品質・デプロイ
-- Phase 6 (#021): エクスポート・インポート機能（データ消失対策として MVP 直後に優先実装）
+- Phase 5 (#018-022): 結合テスト・システムテスト
+- Phase 6 (#023-025): 品質・デプロイ
+- Phase 7 (#026): エクスポート・インポート機能（データ消失対策として MVP 直後に優先実装）
 
 ## 設計書
 

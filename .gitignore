@@ -1,6 +1,9 @@
 # Logs
 logs
 *.log
+
+# テストログ（ローカルのみ、git管理外）
+test-log/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -1,68 +1,56 @@
+/* CSSリセット
+ * box-sizing: border-box を全要素に適用することで、padding/border が
+ * 要素のサイズに含まれ、レイアウト計算が直感的になる。
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* カラー変数
+ * CSS カスタムプロパティ（変数）で色を一元管理する。
+ * 変更時に一箇所を直すだけで全体に反映されるため、
+ * テーマ変更や将来のダークモード対応が容易になる。
+ * 値は設計書(04_screen-design.md §5.4)に基づく。
+ */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --color-primary: #007aff;
+  --color-success: #34c759;
+  --color-danger: #ff3b30;
+  --color-neutral: #8e8e93;
+  --color-background: #f2f2f7;
+  --color-white: #ffffff;
+  --color-text: #000000;
+  --color-border: #d1d1d6;
+  --color-border-focus: #007aff;
+  --color-border-error: #ff3b30;
+}
+
+/* フォント設定
+ * system-ui を先頭に置くことで各 OS のネイティブフォントを優先し、
+ * 追加フォントの読み込みを避けてパフォーマンスを向上させる。
+ */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
+  font-size: 16px;
   line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  color: var(--color-text);
+  background-color: var(--color-background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* モバイルファースト: 最大幅 600px・中央寄せ（PC 時）
+ * アプリの主要ユースケースはモバイルのため、
+ * PC 表示では中央に 600px で固定してモバイルライクな見た目を維持する。
+ */
+#root {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background-color: var(--color-white);
 }
