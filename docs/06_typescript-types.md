@@ -406,28 +406,28 @@ export interface ToastProps {
 }
 
 // ========== 型ガード ==========
-export function isPracticeRecord(obj: unknown): obj is PracticeRecord {
-  if (typeof obj !== 'object' || obj === null) return false;
-  const r = obj as Record<string, unknown>;
-  return (
-    typeof r.id === 'string' &&
-    typeof r.date === 'string' &&
-    typeof r.total === 'number' &&
-    typeof r.correct === 'number' &&
-    typeof r.rate === 'number' &&
-    typeof r.createdAt === 'string'
-  );
-}
+// export function isPracticeRecord(obj: unknown): obj is PracticeRecord {
+//   if (typeof obj !== 'object' || obj === null) return false;
+//   const r = obj as Record<string, unknown>;
+//   return (
+//     typeof r.id === 'string' &&
+//     typeof r.date === 'string' &&
+//     typeof r.total === 'number' &&
+//     typeof r.correct === 'number' &&
+//     typeof r.rate === 'number' &&
+//     typeof r.createdAt === 'string'
+//   );
+// }
 
-export function isRecordInput(obj: unknown): obj is RecordInput {
-  if (typeof obj !== 'object' || obj === null) return false;
-  const r = obj as Record<string, unknown>;
-  return (
-    typeof r.date === 'string' &&
-    typeof r.total === 'number' &&
-    typeof r.correct === 'number'
-  );
-}
+// export function isRecordInput(obj: unknown): obj is RecordInput {
+//   if (typeof obj !== 'object' || obj === null) return false;
+//   const r = obj as Record<string, unknown>;
+//   return (
+//     typeof r.date === 'string' &&
+//     typeof r.total === 'number' &&
+//     typeof r.correct === 'number'
+//   );
+// }
 
 // ========== ヘルパー関数 ==========
 export function getComparisonStatus(comparison: number): ComparisonStatus {

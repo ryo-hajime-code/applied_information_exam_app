@@ -19,7 +19,7 @@ export function RecordForm({ onSubmit }: RecordFormProps) {
   const [correct, setCorrect] = useState<number | ''>('');
 
   // フィールドごとのエラーを個別に管理することで、
-  // どのフィールドが問題かを正確にハイライトできる
+  // どのフィールドが問題かを明確にできる。
   const [dateError, setDateError] = useState<string | undefined>(undefined);
   const [totalError, setTotalError] = useState<string | undefined>(undefined);
   const [correctError, setCorrectError] = useState<string | undefined>(undefined);
@@ -31,11 +31,12 @@ export function RecordForm({ onSubmit }: RecordFormProps) {
       ? calculateRate(correct as number, total as number)
       : null;
 
-  // validateRecord を用いてフォーム送信前の一括バリデーションを行う。
+  // 記録するボタンのonClick で発火し、入力内容を親に渡す。
+  // validateRecord を用いてフォーム送信前の一括バリデーションも行う。
   // 各フィールドのエラーをステートに反映し、送信は行わない。
   const handleSubmit = () => {
     // 未入力の数値フィールドは 0 として validateRecord に渡す。
-    // validateRecord 側で 1 未満を弾くルールがあるため、空欄は自動的にエラーになる。
+    // validateRecord 側で 1 未満を弾くルールがあるため、空欄（0）は自動的にエラーになる。
     const input = {
       date,
       total: total === '' ? 0 : total,

@@ -10,7 +10,6 @@ import type { RecordCardProps, ComparisonStatus } from '../types';
 
 // 前回比の表示文字列を生成する。
 // null（最古の記録）は「--」、正負ゼロは符号付き数値 + 矢印アイコンで表示。
-// 色だけでなく矢印を付ける理由: 色覚多様性に対応するため（04_screen-design.md セクション8.2）。
 function formatComparison(comparison: number | null): string {
   if (comparison === null) return '--';
   const status = getComparisonStatus(comparison);

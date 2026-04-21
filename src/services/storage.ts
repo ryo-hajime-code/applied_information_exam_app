@@ -7,8 +7,6 @@ import type { PracticeRecord, RecordInput, Settings, StorageData } from '../type
 import { STORAGE_KEYS } from '../types';
 import { calculateRate } from './calculator';
 
-// ========== 内部ヘルパー ==========
-
 /**
  * LocalStorage から生のレコードデータを読み込む内部関数。
  * 旧バージョンのデータ（versionフィールドなし）はここでマイグレーションする。
@@ -33,14 +31,11 @@ function loadStorageData(): StorageData {
 
 // ========== PracticeRecord 操作（MVP） ==========
 
-/**
- * 全記録をLocalStorageから取得する。
- * 取得順序は保証しない。ソートが必要な場合は getSortedRecords() を使うこと。
- * エラー時に例外を伝播させないのは、UI側でのtry-catchを不要にするため。
- */
+// 全記録をLocalStorageから取得する。
 export function getAllRecords(): PracticeRecord[] {
   try {
     const data = loadStorageData();
+    // 記録がなければ空の配列を返す
     return data.records ?? [];
   } catch (error) {
     console.error('Failed to get records:', error);
@@ -58,11 +53,8 @@ export function getAllRecords(): PracticeRecord[] {
  * 保存後に getLatestRecord() を呼ぶと、追加したばかりの記録自身が返ってしまう。
  */
 export function createRecord(input: RecordInput): PracticeRecord | null {
-  // この処理が失敗した時にcatchでnullを返す。
-  // try-catch のおかげで、処理が失敗してもプログラムが止まらない。
   try {
-    // rate はユーザー入力から計算するのでここで確定させる。
-    // storage に保存しておくのは表示の一貫性のため（更新時は必ず再計算すること）。
+    // ここでid, rate, createdAt を計算する
     const rate = calculateRate(input.correct, input.total);
 
     const newRecord: PracticeRecord = {
@@ -77,6 +69,7 @@ export function createRecord(input: RecordInput): PracticeRecord | null {
     const records = getAllRecords();
     records.push(newRecord);
 
+    // JSON形式で保存する。
     const data: StorageData = { version: '1.0.0', records };
     localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(data));
 
@@ -89,7 +82,7 @@ export function createRecord(input: RecordInput): PracticeRecord | null {
 }
 
 /**
- * 最新の記録（日付が最も新しく、同日なら createdAt が最も新しい記録）を取得する。
+ * 最新の記録を取得する。（日付が最も新しく、同日なら createdAt が最も新しい記録）
  *
  * ソートに [...records].sort() を使うのは、元の配列を破壊しないため。
  * 配列直接の .sort() は元配列を変更してしまい、getAllRecords() の返り値が
@@ -130,13 +123,14 @@ export function getLatestRecord(): PracticeRecord | null {
 export function deleteRecord(id: string): boolean {
   try {
     const records = getAllRecords();
+    // id は、削除したい記録。
+    // filter で削除したくない記録を複製しておく。
     const filtered = records.filter(record => record.id !== id);
 
-    if (filtered.length === records.length) {
-      // IDが見つからなかった。二重削除など呼び出し側のバグを検出するために false を返す。
-      return false;
-    }
+    // 元の配列と、複製した削除したくない配列のlengthが同じ＝何も削除しない
+    if (filtered.length === records.length) return false;
 
+    // 現時点でのデータの型をVersion1.0.0とする（今後型を変えるなら2.0に変える？）
     const data: StorageData = { version: '1.0.0', records: filtered };
     localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(data));
 
@@ -148,7 +142,7 @@ export function deleteRecord(id: string): boolean {
 }
 
 /**
- * 全記録を日付降順（同日は createdAt 降順）でソートして返す。
+ * 全記録を日付降順に並べ替えて返す。（同日は createdAt 降順）
  *
  * 記録一覧画面と前回比計算で同じ並び順が必要なため、
  * ソートロジックをここに集約して重複実装を防ぐ。
@@ -173,6 +167,8 @@ export function getSettings(): Settings {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     if (!raw) return { examDate: null };
+    // storage.ts 82行目で保存したJSONをSettings型に変換
+    // Home.tsx で getSettings().examDate を使用できる。
     return JSON.parse(raw) as Settings;
   } catch (error) {
     console.error('Failed to get settings:', error);
@@ -187,7 +183,9 @@ export function getSettings(): Settings {
  */
 export function updateSettings(newSettings: Partial<Settings>): Settings | null {
   try {
+    // 今の設定を取得
     const current = getSettings();
+    // 将来的に、「受験日」以外がSettingに含まれることを考慮して、入力した受験日を直接updatedに代入しない。
     const updated: Settings = { ...current, ...newSettings };
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(updated));
     return updated;

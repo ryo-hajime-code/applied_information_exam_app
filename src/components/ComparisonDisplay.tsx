@@ -2,7 +2,6 @@
 // 記録追加後に表示する「前回比」コンポーネント。
 // このコンポーネントは値が存在する場合のみ表示する設計で、
 // null チェックは親（Home）が担うことで責務を分離している。
-// 色だけでなくアイコン(⬆⬇→)も表示するのは、色覚特性のあるユーザーへの対応（04_screen-design.md §8.2）。
 
 import styled, { keyframes } from 'styled-components';
 import type { ComparisonDisplayProps } from '../types';
@@ -11,18 +10,21 @@ import { getComparisonStatus } from '../types';
 // ステータスに対応する色・アイコン・符号プレフィックスのマップ。
 // コンポーネント内に分岐を散らさず、ここに集約することで変更箇所を最小化する。
 const STATUS_CONFIG = {
+  // 前回より正答率が高い
   improved: {
     color: '#34c759',
     icon: '⬆',
-    // 正の場合は「+」を明示的に付けて方向を伝える
+    // 正の場合は「+」を明示的に付ける
     prefix: '+',
   },
+  // 前回より正答率が低い
   declined: {
     color: '#ff3b30',
     icon: '⬇',
     // 負の場合は comparison 自体がマイナス値なので prefix は不要
     prefix: '',
   },
+  // 前回と同じ
   unchanged: {
     color: '#8e8e93',
     icon: '→',

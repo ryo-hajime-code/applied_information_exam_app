@@ -34,10 +34,10 @@ export default function RecordList() {
   const [toastMessage, setToastMessage] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
 
-  // マウント時に LocalStorage から一覧・統計を読み込む。
+  // マウント時に LocalStorage から一覧を読み込む。
   // useEffect の依存配列を [] にして初回のみ実行する。
   useEffect(() => {
-    loadData(); // 同ファイル45行目の関数
+    loadData();
   }, []);
 
   // 一覧・前回比・統計をまとめて再取得する。
@@ -66,6 +66,7 @@ export default function RecordList() {
 
     const success = deleteRecord(deleteTargetId);
     if (success) {
+      // 削除後の一覧を取得する
       loadData();
       showToast('記録を削除しました');
     }
@@ -80,8 +81,6 @@ export default function RecordList() {
   };
 
   // トースト通知を表示し、2秒後に自動消去する。
-  // Toast 内でタイマー管理しないのは、isVisible の切替ごとにタイマーが増殖するため
-  // （Toast.tsx コンポーネントのコメント参照）。
   const showToast = (message: string) => {
     setToastMessage(message);
     setToastVisible(true);

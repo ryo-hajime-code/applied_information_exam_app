@@ -6,48 +6,33 @@
 
 /**
  * 過去問演習の記録。
- * 「Record」ではなく「PracticeRecord」としているのは、TypeScript標準の
- * ユーティリティ型 Record<K,V> と名前が衝突してコンパイルエラーを招くため。
  */
 export interface PracticeRecord {
-  /**
-   * crypto.randomUUID() で生成するUUID v4。
-   * Date.now() ベースのIDを避けているのは、高速に連続記録した場合に
-   * ミリ秒が衝突してIDが重複するリスクがあるため。
-   */
+  /** データのID */
   id: string;
 
-  /**
-   * ユーザーが指定する「実施日」(YYYY-MM-DD形式)。
-   * createdAt と別フィールドを持つのは、後日まとめて記録するケースに対応するため。
-   * (例: 昨日やった演習を今日登録する)
-   */
+  /** 過去問の実施日(YYYY-MM-DD形式) */
   date: string;
 
-  /** 解いた問題数。応用情報午前は80問だが、余裕を持たせ上限200とする。 */
+  /** 解いた問題数。0以上 */
   total: number;
 
   /** 正答した問題数。0以上かつtotal以下の整数。 */
   correct: number;
 
-  /**
-   * 計算で求められるが、あえて保存する。
-   * 表示の一貫性のため。ただし更新時は必ず再計算すること。
-   * 計算式: Math.round((correct / total) * 1000) / 10 (小数第1位まで)
-   */
+  /** 正答率 */
   rate: number;
 
-  /**
-   * システムが自動付与する「記録作成日時」(ISO 8601形式)。
-   * date(実施日)と分けているのは、同日に複数記録した場合の並び順を
-   * createdAt降順で確定させるため。
+  /** 
+   * 記録作成日時
+   * date(実施日)と分けているのは、同日に複数記録した場合の並び順をcreatedAt降順で確定させるため。
    */
   createdAt: string;
 }
 
 /**
- * 記録作成時にユーザーから受け取るデータ。
- * id / rate / createdAt はシステムが自動生成するため含めない。
+ * 記録作成時に入力するデータ。
+ * id / rate / createdAt はシステムが自動で計算・生成するためここには含めない。
  * PracticeRecord と分けることで、フォームの入力値とDBレコードの責務を明確に分離する。
  */
 export interface RecordInput {
@@ -58,8 +43,8 @@ export interface RecordInput {
 
 /**
  * アプリ設定。
- * examDate を string | null にしているのは、未設定状態を明示的に表現するため。
- * undefined ではなく null を使うのは、JSON.stringify/parse で値が消えないようにするため。
+ * 2026年4月時点では受験日のみ。しかし、今後つけ足す可能性あり
+ * 試験日が未設定のときはnullとなる。
  */
 export interface Settings {
   examDate: string | null;
@@ -90,7 +75,7 @@ export interface ValidationResult {
 }
 
 /**
- * 記録一覧画面のサマリー表示に使う統計情報。
+ * 今までの記録から平均正答率と合計値を表示する。
  * 計算ロジック(calculator.ts)の返り値として使うことで、
  * UIが計算の詳細を知らずに済む。
  */
@@ -102,47 +87,51 @@ export interface RecordStats {
 // ========== Union型 ==========
 
 /**
- * 前回比の状態を3値で表す。
+ * 前回からの正答率の変化を「前回比」とし、向上・下降・変化なしの3状態で表す。
  * 数値(number)のままUIに渡すと、コンポーネント側で正負の分岐ロジックが重複するため
- * 文字列リテラル型に変換して渡す。
+ * 文字列に変換して渡す。
  */
 export type ComparisonStatus = 'improved' | 'declined' | 'unchanged';
 
 /**
  * 記録のソート順。現時点は日付降順のみ使用するが、
- * 将来のUI拡張(並び替えオプション追加)に備えて型定義だけ用意する。
+ * 将来の拡張(並び替えオプション追加)に備えて型定義だけ用意する。
  */
 export type SortOrder = 'date-desc' | 'date-asc' | 'rate-desc' | 'rate-asc';
 
 // ========== 定数 ==========
 
 /**
- * LocalStorage のキー名を定数化する。
- * プレフィックス "past_exam_" を付けているのは、同一ドメインで他のアプリが動く場合の
- * キー衝突を避けるため。
- * as const にして StorageKey 型を導出することで、文字列リテラルを直書きするミスを防ぐ。
+ * LocalStorage に保存する記録のラベル名を定数化する。
+ * storage.ts で localStorage.setItem(STORAGE_KEYS.RECORDS) とか localStorage.getItem(STORAGE_KEYS.RECORDS) とかをしている。
+ * これは、past_exam_records　という名前で LocalStorage にデータを保存します/取り出します。のやり取りをしている。
  */
 export const STORAGE_KEYS = {
   RECORDS: 'past_exam_records',
   SETTINGS: 'past_exam_settings',
 } as const;
 
-/** STORAGE_KEYS の値のユニオン型。storage.ts で引数の型として使う。 */
+/**
+ * type StorageKey = 'past_exam_records' | 'past_exam_settings' と同じ意味。
+ * STORAGE_KEYS に新しいキーを追加したときでも対応できるようにこの書き方をする。
+ */
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
 
 // ========== React コンポーネント Props ==========
 
 /**
- * RecordForm は PracticeRecord を返す。
+ * 過去問実施日・回答数・正答数を入力するフォームの型定義
  * RecordInput ではなく PracticeRecord を返すのは、id/rate/createdAt の付与を
  * フォーム内部(または呼び出し前)で完結させ、親コンポーネントの責務を減らすため。
+ * RecordForm.tsxのコードを追うと、storage.ts でこれらを計算していることがわかる。
  */
 export interface RecordFormProps {
   onSubmit: (record: PracticeRecord) => void;
 }
 
 /**
- * RecordCard は1件の記録と前回比を受け取る。
+ * 過去問実施の記録1件あたりの型定義
+ * PracticeRecord型の記録と、前回との比較、削除ボタン
  * comparison を null 許容にしているのは、最も古い記録には前回が存在しないため。
  */
 export interface RecordCardProps {
@@ -153,9 +142,9 @@ export interface RecordCardProps {
 }
 
 /**
- * CountDown は受験日の表示と変更を担う。
- * examDate の変更コールバックを null 許容にしているのは、
- * 受験日を「未設定に戻す」操作をサポートするため。
+ * Home画面上部に表示する、「受験日まで○日」の型定義
+ * 受験日の変更もここで行う。
+ * examDate の変更コールバックを null 許容にしているのは、受験日を「未設定に戻す」操作をサポートするため。
  */
 export interface CountDownProps {
   examDate: string | null;
@@ -163,7 +152,8 @@ export interface CountDownProps {
 }
 
 /**
- * ComparisonDisplay は前回比の値を受け取り表示するだけ。
+ * 記録登録時に前回比を表示するコンポーネントの型定義
+ * このコンポーネントは表示するだけ。
  * null を受け取らないのは、呼び出し側で null チェックをしてから表示制御するため。
  */
 export interface ComparisonDisplayProps {
@@ -171,20 +161,28 @@ export interface ComparisonDisplayProps {
 }
 
 /**
- * ConfirmDialog は削除確認に使う汎用ダイアログ。
+ * 記録削除時の確認用ダイアログの型定義
  * message を Props として受け取るのは、削除対象によってメッセージを変えられるようにするため。
- */
+*/
 export interface ConfirmDialogProps {
+  // isOpenは「今開いているかどうか」。削除ボタンを押して「削除しますか？」の表示が出ていればtrueになる
   isOpen: boolean;
+
+  // messageは「削除しますか？」のメッセージ
   message: string;
+
+  // 削除確定のボタン
   onConfirm: () => void;
+
+  // やっぱり削除しないのボタン
   onCancel: () => void;
 }
 
 /**
- * Toast は操作完了通知に使う。
- * type を 'success' | 'info' に限定することで、
- * UIのスタイル分岐を型で保証する。
+ * ボタン等で画面を操作したらしたからフワッと出てくるコンポーネントの型定義
+ * 操作完了通知に使う。
+ * Homeでは記録登録時、RecordListでは記録削除時に出てくる。
+ * それぞれのtype は 'success' | 'info' になっている。
  */
 export interface ToastProps {
   message: string;

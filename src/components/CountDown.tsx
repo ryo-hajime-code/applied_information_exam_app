@@ -1,7 +1,7 @@
 // src/components/CountDown.tsx
-// 受験日カウントダウンと受験日設定UIを一体化したコンポーネント。
-// 設定ページ（/settings）を別途作らずにインライン展開する設計にした理由は、
-// 画面遷移を減らしてユーザーの操作コストを下げるため（04_screen-design.md §3.2.A）。
+// 「試験日まであと○日」を表示するコンポーネント。
+// 同時に、受験日を設定できる。
+// これをHome.tsxに置くことで、画面遷移せずに受験日を設定できる。
 
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -11,16 +11,17 @@ import { calcDaysUntil } from '../utils/dateFormat';
 import { validateSettings } from '../utils/validation';
 import { Button } from './Button';
 
+// 親から渡される props は、examDateとonExamDateChange。
 export function CountDown({ examDate, onExamDateChange }: CountDownProps) {
   // 編集UIの開閉状態。受験日設定済み・未設定どちらの表示からでも開ける。
   const [isEditing, setIsEditing] = useState(false);
-  // 編集中の一時的な日付値。保存前にバリデーションで弾けるよう、確定前は state に保持する。
+  // 編集中の一時的な日付値。
+  // 保存ボタンを押すまでは draftDate という下書きに入力を溜めておき、バリデーションOKのときだけ本物の examDate に反映する。
   const [draftDate, setDraftDate] = useState(examDate ?? '');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSave = () => {
     // 空文字は「受験日なし（null）」として保存する。
-    // 設定削除の手段をユーザーに提供するため null を許容している。
     const settingsToValidate = { examDate: draftDate || null };
     const result = validateSettings(settingsToValidate);
 
@@ -32,6 +33,7 @@ export function CountDown({ examDate, onExamDateChange }: CountDownProps) {
     const newDate = draftDate || null;
     updateSettings({ examDate: newDate });
     onExamDateChange(newDate);
+    // 入力フォームを閉じて、エラーメッセージが出てるなら消す
     setIsEditing(false);
     setErrorMessage(null);
   };

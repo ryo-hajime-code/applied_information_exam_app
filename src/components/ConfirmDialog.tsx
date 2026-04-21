@@ -1,8 +1,6 @@
 // src/components/ConfirmDialog.tsx
 // 削除操作前の確認ダイアログ。
-// isOpen: false の時は null を返してレンダリング自体をスキップする設計にした理由:
-// visibility: hidden と違い DOM から除去されるため、非表示中に誤ってフォーカスが
-// ダイアログ内に移動するリスクをなくせるため。
+// isOpen: false の時は null を返してレンダリングをスキップ
 
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
@@ -11,8 +9,7 @@ import type { ConfirmDialogProps } from '../types';
 
 export function ConfirmDialog({ isOpen, message, onConfirm, onCancel }: ConfirmDialogProps) {
   // ダイアログが開いた時に「削除」ボタンにフォーカスを移動する。
-  // キャンセルではなく削除側をデフォルトフォーカスにする理由:
-  // alertdialog では「危険なアクション」側へのフォーカスが ARIA APG の推奨パターン。
+  // useRef は DOM にアクセスするときにも使用する。
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -31,8 +28,8 @@ export function ConfirmDialog({ isOpen, message, onConfirm, onCancel }: ConfirmD
   if (!isOpen) return null;
 
   return (
+    // 薄暗い背景をクリックしてもダイアログは閉じる
     <Overlay onClick={onCancel}>
-      {/* オーバーレイクリックで閉じるが、ダイアログ本体のクリックは伝播させない */}
       <Dialog
         role="alertdialog"
         aria-modal="true"
