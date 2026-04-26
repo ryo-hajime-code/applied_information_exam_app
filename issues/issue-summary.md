@@ -7,8 +7,6 @@
 - **Phase 3: ページ・画面実装** - App/ルーティング・各コンポーネント・Home画面・RecordList画面 / issue #009-014
 - **Phase 4: テスト実装** - calculator / storage / validation の各ユニットテスト / issue #015-017
 - **Phase 5: 結合テスト・システムテスト** - サービス層・テスト環境構築・Home画面・RecordList画面の結合テスト、システムテスト / issue #018-022
-- **Phase 6: 品質・デプロイ準備** - アクセシビリティ・アニメーション・README・デプロイ / issue #023-025
-- **Phase 7: MVP後機能** - エクスポート・インポート機能（データ消失対策）/ issue #026
 
 ---
 
@@ -38,10 +36,6 @@
 | 020 | integrationTest | issue-020_integration_tests_home.md | 結合テスト — Home画面 | Issue-013, Issue-019 |
 | 021 | integrationTest | issue-021_integration_tests_record_list.md | 結合テスト — RecordList画面 | Issue-014, Issue-019 |
 | 022 | systemTest | issue-022_system_test.md | システムテスト | Issue-019, Issue-020, Issue-021 |
-| 023 | chore | issue-023_accessibility_and_animations.md | アクセシビリティ・アニメーション・レスポンシブ対応 | Issue-013, Issue-014 |
-| 024 | chore | issue-024_readme_documentation.md | README・ドキュメント整備 | なし |
-| 025 | chore | issue-025_deploy_setup.md | デプロイ設定（Vercel / Netlify） | Issue-013, Issue-014, Issue-024 |
-| 026 | chore | issue-026_export_import_feature.md | エクスポート・インポート機能の実装 | Issue-002, Issue-007, Issue-013, Issue-014 |
 
 ---
 
