@@ -1,19 +1,28 @@
 // src/components/ConfirmDialog.tsx
 // 削除操作前の確認ダイアログ。
-
+import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button } from './Button';
 import type { ConfirmDialogProps } from '../types';
 
 export function ConfirmDialog({ isOpen, message, onConfirm, onCancel }: ConfirmDialogProps) {
-  
-  // Esc キーでキャンセル（04_screen-design.md セクション4.2.D）
+    const dialogRef = useRef<HTMLDivElement>(null);
+
+  // escキーでダイアログを閉じるため、ダイアログ表示時に div へフォーカスを移す。
+  useEffect(() => {
+    if (isOpen) {
+      dialogRef.current?.focus();
+    }
+  }, [isOpen]);
+
+
+  // Esc キーでキャンセル
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       onCancel();
     }
   };
-  
+
   // isOpen: false の時（ダイアログを開いていない時）は null を返してレンダリングをスキップ
   if (!isOpen) return null;
 
@@ -21,6 +30,9 @@ export function ConfirmDialog({ isOpen, message, onConfirm, onCancel }: ConfirmD
     // 薄暗い背景をクリックしてもダイアログは閉じる
     <Overlay onClick={onCancel}>
       <Dialog
+        ref={dialogRef}
+        // tabIndex={-1} がないとdivタグはフォーカスを受け取れず、escキーでダイアログが閉じない。
+        tabIndex={-1}
         onKeyDown={handleKeyDown}
         onClick={(e) => e.stopPropagation()}
       >

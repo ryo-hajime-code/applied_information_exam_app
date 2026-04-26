@@ -3,7 +3,7 @@
 // このコンポーネントは onDelete(id) を呼ぶだけに責務を絞る。
 
 import { useState } from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { getComparisonStatus } from '../types';
 import { formatDate } from '../utils/dateFormat';
 import type { RecordCardProps, ComparisonStatus } from '../types';
@@ -60,24 +60,12 @@ export function RecordCard({ record, comparison, onDelete }: RecordCardProps) {
 
 // ─── Styled Components ───────────────────────────────────────────
 
-const fadeOut = keyframes`
-  from { opacity: 1; }
-  to   { opacity: 0; }
-`;
-
-// 04_screen-design.md セクション5.3: カードスタイル
 const Card = styled.div<{ $isDeleting: boolean }>`
   background-color: #ffffff;
   border-radius: 12px;
   padding: 16px;
   margin: 8px 0;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-
-  ${({ $isDeleting }) =>
-    $isDeleting &&
-    css`
-      animation: ${fadeOut} 0.3s ease forwards;
-    `}
 `;
 
 const CardHeader = styled.div`
