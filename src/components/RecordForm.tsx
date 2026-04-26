@@ -19,25 +19,27 @@ export function RecordForm({ onSubmit }: RecordFormProps) {
   const [correct, setCorrect] = useState<number | ''>('');
 
   // フィールドごとのエラーを個別に管理することで、
-  // どのフィールドが問題かを正確にハイライトできる
+  // どのフィールドが問題かを明確にできる。
   const [dateError, setDateError] = useState<string | undefined>(undefined);
   const [totalError, setTotalError] = useState<string | undefined>(undefined);
   const [correctError, setCorrectError] = useState<string | undefined>(undefined);
 
-  // リアルタイム正答率: 両方未入力・未完成の場合は null を返す。
-  // null のときに「---%」を表示することで、無効な中間状態をユーザーに見せない。
   const liveRate: number | null =
+  // 回答数・正答数が両方とも空欄でない時、
     total !== '' && correct !== ''
+      // 正答率を計算する。
       ? calculateRate(correct as number, total as number)
+      //片方が空欄の場合は null を返す。
       : null;
 
-  // validateRecord を用いてフォーム送信前の一括バリデーションを行う。
+  // 記録するボタンのonClick で発火し、入力内容を親に渡す。
+  // validateRecord を用いてフォーム送信前の一括バリデーションも行う。
   // 各フィールドのエラーをステートに反映し、送信は行わない。
   const handleSubmit = () => {
     // 未入力の数値フィールドは 0 として validateRecord に渡す。
-    // validateRecord 側で 1 未満を弾くルールがあるため、空欄は自動的にエラーになる。
     const input = {
       date,
+      // 空欄なら0になる。（number型に変換）
       total: total === '' ? 0 : total,
       correct: correct === '' ? 0 : correct,
     };
@@ -47,6 +49,8 @@ export function RecordForm({ onSubmit }: RecordFormProps) {
     if (!result.valid) {
       // validateRecord は最初に発見したエラーのみ返す。
       // どのフィールドのエラーかをエラーメッセージで判定して振り分ける。
+      // result.error はvalidation.ts の17行目で設定された、" error: 'XXXXX' "の箇所。
+      // この'XXXXX'の箇所をmsgに代入する。
       const msg = result.error ?? '';
       if (msg.includes('実施日')) {
         setDateError(msg);

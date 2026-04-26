@@ -28,12 +28,15 @@ export default function Home() {
     setExamDate(getSettings().examDate);
   }, []);
 
-  // RecordForm が createRecord() を呼んで保存済みの PracticeRecord を渡してくる。
-  // 「前回比」は新しいレコードの1つ前のレコードとの差分なので、
-  // ソート済み配列で newRecord の位置を特定し、その次（index + 1）を「前回」とする。
-  // ※ 保存後に getLatestRecord() を呼ぶと新しいレコード自身が返るため、この方法を採用。
+  // 「記録するボタン」のonClick で発火し、RecordForm.tsx から渡された入力情報を最新記録として保存する。
+  // 同時に、前回比を計算して画面に表示する（Toast で表示）
   const handleSubmit = (newRecord: PracticeRecord) => {
-    const sorted = getSortedRecords(); // 保存済みの全レコードをソートして取得
+
+    // RecordForm が createRecord() を呼んで保存済みの PracticeRecord を渡してくる。
+    // ソート済み配列で最新記録の位置を特定し、その次（index + 1）を「前回」とする。この2つで前回比を計算する。
+    // 保存済みの全レコードをソートして取得
+    const sorted = getSortedRecords();
+    // findIndex は配列内の要素を検索するためのメソッド
     const newIndex = sorted.findIndex((r) => r.id === newRecord.id);
 
     // 日付降順ソートで newRecord の次（index + 1）が時系列上の「前回」
@@ -44,20 +47,14 @@ export default function Home() {
       : null;
 
     setComparison(newComparison);
-    showToast('記録を追加しました ✓', 'success');
+    showToast('記録を追加しました ✓');
   };
 
-  // トースト通知を表示し、2秒後に自動消去する。
-  // Toast 内でタイマー管理しないのは、isVisible の切替ごとにタイマーが増殖するため
-  // （Toast.tsx コンポーネントのコメント参照）。
-  const showToast = (message: string, _type: 'success' | 'info') => {
+  // 前回比を表示し、2秒後に自動消去する。
+  const showToast = (message: string) => {
     setToastMessage(message);
     setToastVisible(true);
     setTimeout(() => setToastVisible(false), 2000);
-    // 補足：二つ目の引数 _type について
-    // 関数内では_typeを使用していない。
-    // 使用していない引数があっても警告が出ないように、_ をつけている。
-    // しかし、将来的には、type を受け取るようにするため、今ここで宣言する。
   };
 
   return (
@@ -69,8 +66,7 @@ export default function Home() {
 
       <RecordForm onSubmit={handleSubmit} />
 
-      {/* 前回比は記録追加後にのみ表示。null チェックをここで行い、
-          ComparisonDisplay は値が存在することを前提にする。 */}
+      {/* 前回比は記録追加後にのみ表示。*/}
       {comparison !== null && (
         <ComparisonDisplay comparison={comparison} />
       )}

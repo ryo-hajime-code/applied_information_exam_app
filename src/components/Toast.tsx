@@ -1,8 +1,5 @@
 // src/components/Toast.tsx
 // 操作結果を画面下部からスライドインで通知するトーストコンポーネント。
-// 自動消去タイマーは親コンポーネント側で管理する設計にした理由:
-// Toast 自身が setTimeout を持つと、isVisible が切り替わるたびにタイマーが
-// 複数生成されてクリーンアップが複雑になるため。
 
 import styled, { css, keyframes } from 'styled-components';
 import type { ToastProps } from '../types';

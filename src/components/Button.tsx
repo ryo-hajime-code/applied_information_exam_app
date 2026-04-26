@@ -1,28 +1,25 @@
 // src/components/Button.tsx
-// ページに依存しない汎用ボタン。variant でスタイルを切り替えることで、
-// 用途ごとにコンポーネントを作らずに済む。
-// styled-components を選んだ理由: variant に応じたスタイルの分岐を
-// props で型安全に記述でき、CSS Modules のようにクラス名の文字列管理が不要になるため。
+// variant でスタイルを切り替えることで、用途ごとにコンポーネントを作らずに済む。
 
 import styled, { css } from 'styled-components';
 
 interface ButtonProps {
+  // ボタンの文字
   label: string;
+  // スタイル
   variant: 'primary' | 'secondary' | 'danger';
+  // クリック時に呼び出す
   onClick: () => void;
+  // クリックできるか否か
   disabled?: boolean;
 }
 
 export function Button({ label, variant, onClick, disabled = false }: ButtonProps) {
   return (
     <StyledButton
-      // $variant とプレフィックスを付けることで styled-components が DOM に
-      // 不明な属性として渡すのを防ぐ（transient props）
       $variant={variant}
       onClick={onClick}
       disabled={disabled}
-      // テキストが visible なため aria-label は不要。
-      // スクリーンリーダーはボタンのテキストコンテンツを直接読み上げるため。
       type="button"
     >
       {label}
@@ -32,7 +29,7 @@ export function Button({ label, variant, onClick, disabled = false }: ButtonProp
 
 // ─── Styled Components ───────────────────────────────────────────
 
-// variant ごとの背景色・文字色マップ（04_screen-design.md セクション5.1）
+// variant ごとの背景色・文字色マップ
 const variantStyles = {
   primary: css`
     background-color: #007aff;

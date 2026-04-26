@@ -1,57 +1,33 @@
 // src/components/ConfirmDialog.tsx
 // 削除操作前の確認ダイアログ。
-// isOpen: false の時は null を返してレンダリング自体をスキップする設計にした理由:
-// visibility: hidden と違い DOM から除去されるため、非表示中に誤ってフォーカスが
-// ダイアログ内に移動するリスクをなくせるため。
 
-import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Button } from './Button';
 import type { ConfirmDialogProps } from '../types';
 
 export function ConfirmDialog({ isOpen, message, onConfirm, onCancel }: ConfirmDialogProps) {
-  // ダイアログが開いた時に「削除」ボタンにフォーカスを移動する。
-  // キャンセルではなく削除側をデフォルトフォーカスにする理由:
-  // alertdialog では「危険なアクション」側へのフォーカスが ARIA APG の推奨パターン。
-  const confirmButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (isOpen) {
-      confirmButtonRef.current?.focus();
-    }
-  }, [isOpen]);
-
+  
   // Esc キーでキャンセル（04_screen-design.md セクション4.2.D）
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       onCancel();
     }
   };
-
+  
+  // isOpen: false の時（ダイアログを開いていない時）は null を返してレンダリングをスキップ
   if (!isOpen) return null;
 
   return (
+    // 薄暗い背景をクリックしてもダイアログは閉じる
     <Overlay onClick={onCancel}>
-      {/* オーバーレイクリックで閉じるが、ダイアログ本体のクリックは伝播させない */}
       <Dialog
-        role="alertdialog"
-        aria-modal="true"
-        aria-labelledby="confirm-dialog-message"
         onKeyDown={handleKeyDown}
         onClick={(e) => e.stopPropagation()}
       >
         <Message id="confirm-dialog-message">{message}</Message>
         <ButtonRow>
           <Button label="キャンセル" variant="secondary" onClick={onCancel} />
-          {/* ref を渡すために Button コンポーネントを直接使わず、
-              forwardRef が必要になるため独自のボタンを使用する */}
-          <DangerButton
-            ref={confirmButtonRef}
-            type="button"
-            onClick={onConfirm}
-          >
-            削除
-          </DangerButton>
+          <Button label="削除" variant="danger" onClick={onConfirm} />
         </ButtonRow>
       </Dialog>
     </Overlay>
@@ -93,29 +69,4 @@ const ButtonRow = styled.div`
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-`;
-
-// Button コンポーネントへの ref 転送が必要なため、削除ボタンのみ直接スタイル定義する。
-// Button コンポーネントに forwardRef を追加するよりも、
-// ここだけ個別定義する方が変更範囲を最小に抑えられるため。
-const DangerButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 24px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1;
-  min-height: 44px;
-  min-width: 44px;
-  background-color: #ff3b30;
-  color: #ffffff;
-  transition: filter 0.2s ease;
-
-  &:active {
-    filter: brightness(0.85);
-  }
 `;

@@ -1,22 +1,25 @@
 // src/components/NumberInput.tsx
-// 数値入力フィールド。バリデーションエラーの表示をコンポーネント内に閉じ込めることで、
+// 数字を入力するinputフォーム。これを「回答数」や「正答数」の入力に使う。
+// バリデーションエラーの表示をコンポーネント内に閉じ込めることで、
 // 呼び出し側（RecordForm）がエラー表示の詳細を知らずに済む。
-//
-// なぜ type="number" ではなく type="text" + inputMode にするか:
-// type="number" はブラウザによってスピナーUI が出たり、
-// 先頭ゼロが入力されたりと挙動が不安定なため。
-// inputMode="numeric" でモバイルでは数値キーパッドを表示し、
-// 値の扱いはアプリ側で制御する。
 
 import styled from 'styled-components';
 
+// interfaceなので、実際の値や文字列は親側で決める
 interface NumberInputProps {
+  // フォームのラベル
   label: string;
+  // 入力値
   value: number | '';
+  // 入力値が変化したとき
   onChange: (value: number | '') => void;
+  // 入力フォームのplaceholder
   placeholder?: string;
+  // エラー発生時のメッセージ
   error?: string;
+  // 入力可能な最小値
   min?: number;
+  // 入力可能な最大値
   max?: number;
 }
 
@@ -52,8 +55,9 @@ export function NumberInput({
       <Input
         id={inputId}
         $hasError={!!error}
-        // type="text" + inputMode でモバイル数値キーパッドを出しつつ、
-        // スピナーUIを避ける（詳細は上部コメント参照）
+        // type="number" にするとスピナーUI が出る場合がある。
+        // （数字の横の▼とか▲とかをクリックして数字を入力・変更できるやつ）
+        // // type="text" + inputMode で入力フォームの見た目を整える。
         type="text"
         inputMode="numeric"
         value={value}
@@ -67,6 +71,7 @@ export function NumberInput({
         aria-describedby={`${inputId}-error`}
       />
       <ErrorMessage id={`${inputId}-error`} aria-live="polite">
+        {/* error が存在すればそれを、なければ'' を返す */}
         {error ?? ''}
       </ErrorMessage>
     </Wrapper>
