@@ -12,22 +12,8 @@
 
 ## 1. システム構成図
 
-```
-┌─────────────────────────────────────────┐
-│          ユーザー(ブラウザ)              │
-└────────────────┬────────────────────────┘
-                 │
-                 │ HTTPS
-                 │
-┌────────────────▼────────────────────────┐
-│     デプロイ先のサーバー                    │
-│                                          │
-│  ┌────────────────────────────────────┐ │
-│  │   ビルドした HTML, CSS, JS           │ │
-│  └────────────────────────────────────┘ │
-└──────────────────────────────────────────┘
-
-        ↓ ブラウザ内で実行
+Single Page Applicationで、全処理はブラウザ内で完結
+バックエンド不要とし、ローカルストレージに保存する。
 
 ┌─────────────────────────────────────────┐
 │       クライアント(ブラウザ)             │
@@ -50,11 +36,6 @@
 │  │   (ブラウザ内のデータ保存領域)       │ │
 │  └────────────────────────────────────┘ │
 └──────────────────────────────────────────┘
-```
-
-### 特徴
-- **サーバーレス**: バックエンド不要、すべてクライアントで完結
-- **シンプル**: 3層構造(UI層・データアクセス層・ストレージ層)
 
 ---
 
@@ -74,10 +55,10 @@
 ```
 
 **選定理由**:
-- React: 学習リソースが豊富、コンポーネント再利用しやすい
-- Vite: 高速なビルド、TypeScriptサポートが標準
-- TypeScript: データ構造が明確、LocalStorage操作で型安全性が効く
-- strict: true を初期から有効化し、型安全性を最大限に活用する
+- React: コンポーネントベースの設計のため、再利用性や保守性に優れているため。過去に学習したことがあり、学習コストが比較的低かったため。
+- Vite: 高速なビルドを実現でき、TypeScriptサポートが標準であるため。
+- TypeScript: クラスやインターフェースなどの概念を活用し、データ構造を定義できるため。また、コード内の潜在的なエラーに気づけるため。
+- LocalStorage: データベース、バックエンドなしでMVPを最速で動かすため。
 
 ### 2.2 データ保存
 - **LocalStorage**: キーバリュー型のブラウザストレージ
@@ -85,17 +66,15 @@
 - **データ形式**: バージョン付きJSON文字列(詳細は03_database.mdを参照)
 
 ### 2.3 ホスティング
-- **推奨**: Vercel or Netlify
-- **理由**: 無料枠が充実、GitHubと連携して自動デプロイ、HTTPS自動対応
+- **推奨**: Vercel
+- **理由**: Githubと連携し、ビルドからデプロイまでを行えるため
 
 ### 2.4 開発ツール
 ```json
 {
   "version_control": "Git + GitHub",
   "package_manager": "npm",
-  "code_formatter": "Prettier",
-  "linter": "ESLint",
-  "test": "Vitest(計算ロジックのテストを優先)"
+  "test": "Vitest"
 }
 ```
 
@@ -111,9 +90,12 @@ past-exam-tracker/
 ├── src/
 │   ├── components/        # 再利用可能なUIコンポーネント
 │   │   ├── Button.tsx
+│   │   ├── ComparisonDisplay.tsx  # 前回比表示
+│   │   ├── ConfirmDialog.tsx
+│   │   ├── CountDown.tsx          # カウントダウン・受験日設定UI
 │   │   ├── NumberInput.tsx
 │   │   ├── RecordCard.tsx
-│   │   ├── ConfirmDialog.tsx
+│   │   ├── RecordForm.tsx         # 記録入力フォーム
 │   │   └── Toast.tsx
 │   │
 │   ├── pages/             # ページコンポーネント
@@ -132,6 +114,7 @@ past-exam-tracker/
 │   │   └── index.ts
 │   │
 │   ├── App.tsx
+│   ├── App.css
 │   ├── main.tsx
 │   └── index.css
 │
@@ -160,41 +143,35 @@ past-exam-tracker/
 
 ```
 App
-├── Router
-    ├── Home (/)
-    │   ├── CountDown          # 受験日カウントダウン(タップで受験日設定)
-    │   ├── RecordForm         # 記録入力フォーム
-    │   │   ├── DateInput
-    │   │   ├── NumberInput
-    │   │   └── Button
-    │   ├── ComparisonDisplay  # 前回比表示
-    │   └── NavigationButton   # 記録一覧へのボタン
-    │
-    └── RecordList (/records)
-        ├── RecordSummary      # 平均正答率・総演習回数
-        ├── RecordCard[]       # 各記録のカード(削除ボタン付き)
-        ├── ConfirmDialog      # 削除確認ダイアログ
-        └── BackButton
+├── Home (/)                          # 記録入力・前回比表示・受験日カウントダウン
+│   ├── CountDown                     # 受験日カウントダウン・インライン受験日設定UI
+│   ├── RecordForm                    # 日付・問題数・正答数の入力フォーム
+│   ├── ComparisonDisplay             # 前回比表示（記録後にフェードイン）
+│   └── Button                        # 記録一覧への遷移ボタン
+└── RecordList (/records)             # 記録一覧・削除操作
+    ├── RecordCard[]                  # 記録カード（削除ボタン付き）
+    ├── ConfirmDialog                 # 削除確認ダイアログ
+    └── Toast                         # 削除後のトースト通知
 ```
 
 ### 4.2 状態管理
 
 #### MVP段階: ローカルステート(useState)
-```tsx
-// Home.tsx
-const [records, setRecords] = useState<PracticeRecord[]>([]);
-const [examDate, setExamDate] = useState<string | null>(null);
-const [comparison, setComparison] = useState<number | null>(null);
+以下の項目をuseStateで状態管理する。
+**Home.tsx**:
+- examDate（受験予定日）
+- comparison（前回比　今回の正答率 − 前回の正答率）
+- toastMessage（トースト通知のメッセージ文字列）
+- toastVisible（トースト通知の表示フラグ）
 
-// RecordList.tsx
-const [records, setRecords] = useState<PracticeRecord[]>([]);
-```
-
-**理由**: シンプルで十分、状態管理ライブラリ不要
-
-#### 拡張時の選択肢
-- Context API: グローバル状態が必要になったら
-- Zustand: より複雑な状態管理が必要になったら
+**RecordList.tsx**:
+- records（一覧ページに表示する演習記録）
+- comparisons（各記録の前回比。削除後に再計算される）
+- stats（平均正答率・総演習回数のサマリー情報）
+- deleteTargetId（削除確認ダイアログの対象レコードID。null = 未選択）
+- isDialogOpen（削除確認ダイアログの表示フラグ）
+- toastMessage（トースト通知のメッセージ文字列）
+- toastVisible（トースト通知の表示フラグ）
 
 ---
 
@@ -206,14 +183,13 @@ const [records, setRecords] = useState<PracticeRecord[]>([]);
 [ユーザー入力]
      ↓
 [RecordForm]
-  - フォームの値を収集
-  - バリデーション(validation.ts)
+  - フォームの値をバリデーションチェックにかける
      ↓
 [calculator.ts]
   - 正答率を計算
      ↓
 [Home]
-  - 保存前に getLatestRecord() で前回の記録を取得
+  - 保存前に getLatestRecord() で前回の記録を取得（前回比計算のため）
      ↓
 [storage.ts]
   - LocalStorageに保存
@@ -249,7 +225,7 @@ const [records, setRecords] = useState<PracticeRecord[]>([]);
 [ページ読み込み]
      ↓
 [RecordList / Home]
-  - useEffect で初期化
+  - useEffect でデータ取得
      ↓
 [storage.ts]
   - LocalStorageから取得
@@ -270,100 +246,12 @@ const [records, setRecords] = useState<PracticeRecord[]>([]);
 
 ### 6.2 対策
 - 操作ごとにtry-catchでエラーハンドリング
-- エクスポート機能をMVP直後に実装（データ消失対策）
 - データにversionフィールドを初回から含める（将来のマイグレーション対応）
 
 ### 6.3 セキュリティ
 - 個人情報なし: セキュリティリスク低
 - XSS対策: Reactのデフォルト機能で対応済み
-- HTTPS: ホスティングサービスで自動対応
+※ {value} として描画するならReactが自動でXSSを防いでくれる。
+　一方、dangerouslySetInnerHTML や innerHTML の直書きが危険
 
 ---
-
-## 7. パフォーマンス考慮
-
-### 7.1 最適化ポイント
-- **初回ロード**: Viteのコード分割で高速化
-- **レンダリング**: 不要な再レンダリングを避ける(React.memo等)
-- **LocalStorage**: 読み書き頻度を最小限に
-
-### 7.2 目標値
-- 初回ロード: 3秒以内
-- 記録追加: 0.5秒以内(体感でほぼ瞬時)
-- 画面遷移: 0.2秒以内
-
----
-
-## 8. 開発環境セットアップ
-
-### 8.1 必要なツール
-```bash
-node -v  # v18以上推奨
-npm -v
-```
-
-### 8.2 プロジェクト作成コマンド
-```bash
-npm create vite@latest past-exam-tracker -- --template react-ts
-cd past-exam-tracker
-npm install
-npm install react-router-dom
-npm install date-fns
-npm install styled-components
-npm install -D @types/styled-components
-npm run dev
-```
-
-### 8.3 tsconfig.json の設定
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true
-  }
-}
-```
-
-**注意**: strictモードは初期から有効化する。
-
----
-
-## 9. デプロイ手順
-
-### 9.1 GitHub連携(推奨)
-1. GitHubリポジトリを作成
-2. Vercel/NetlifyでGitHub連携
-3. pushするだけで自動デプロイ
-
-### 9.2 手動デプロイ(Vercel)
-```bash
-npm install -g vercel
-vercel
-```
-
----
-
-## 10. 今後の拡張を見据えた設計
-
-### 10.1 拡張しやすい設計
-- **データアクセス層の抽象化**: `storage.ts`を差し替えるだけでFirebaseに移行可能
-- **コンポーネントの疎結合**: ページ間で依存しない
-- **データのバージョン管理**: 初回からversionフィールドを含め、マイグレーション対応可能
-
-### 10.2 技術的負債の回避
-- **ESLint/Prettier**: 最初から設定
-- **TypeScript strict**: 最初から有効化
-- **テストコード**: 計算ロジック(calculator.ts)から優先的に追加
-
----
-
-## 付録: アーキテクチャ判断の記録
-
-| 判断 | 理由 |
-|------|------|
-| サーバーレス | 運用コストゼロ、個人開発に最適 |
-| React | コンポーネント指向で拡張しやすい、学習リソースが豊富 |
-| LocalStorage | 最もシンプル、データ量が少ない、認証不要 |
-| strict: true 初期有効化 | 後から有効化すると大量のエラー修正が必要になるため |
-| 削除機能をMVPに含める | 入力ミスは必ず起きるため |
