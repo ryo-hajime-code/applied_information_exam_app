@@ -39,9 +39,10 @@ const typeStyles = {
 const ToastContainer = styled.div<{ $isVisible: boolean; $type: ToastProps['type'] }>`
   position: fixed;
   bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
-
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: fit-content;
   padding: 12px 24px;
   border-radius: 8px;
   color: #ffffff;
