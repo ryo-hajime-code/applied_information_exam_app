@@ -26,3 +26,4 @@ npm run dev
 
 ## 制作背景や今回の制作を通じて学んだこと・感じたこと
 以下の記事を参照ください。<br />
+https://zenn.dev/ryo_hajime/articles/40fae3abf21862
