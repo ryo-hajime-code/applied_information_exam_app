@@ -8,6 +8,18 @@
 <br />
 <img width="1440" height="720" alt="image" src="https://github.com/user-attachments/assets/c7122ec8-7a7a-4f2d-ad52-6d780a042d34" />
 
+## ディレクトリ構成
+```
+.
+├── docs/
+│   ├── 01_requirements.md     # 要件定義書
+│   ├── 02_architecture.md     # アーキテクチャ設計書
+│   ├── 03_database.md         # データベース設計書
+│   └── 04_screen-design.md    # 画面設計書
+├── issues/                    # 開発のissue
+└── src/                       # ソースコード
+```
+
 ## 技術スタック
 フロントエンド：React, TypeScript<br />
 バックエンド：なし（データの保存はLocalStorageとし、必要最低限の機能を最速で動かすため）<br />
@@ -19,11 +31,11 @@
 ```
 npm install
 ```
-3. 以下のコマンドを打つことでローカル環境下で立ち上がる
+3. ローカル環境下で立ち上げる
 ```
 npm run dev
 ```
 
-## 制作背景や今回の制作を通じて学んだこと・感じたこと
+## 今回の制作を通じて学んだこと・感じたこと
 以下の記事を参照ください。<br />
 https://zenn.dev/ryo_hajime/articles/40fae3abf21862
